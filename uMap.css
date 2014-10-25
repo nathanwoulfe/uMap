@@ -1,0 +1,134 @@
+﻿.umap-location-list-wrapper, .umap-input-wrapper {
+    padding:15px 0 0;
+}
+
+.umap-input-wrapper {
+    text-align: center;
+    margin: 15px 0 0;
+    background: #f5f5f5;
+    padding: 15px 0;
+}
+
+.umb-googlemaps label {
+    vertical-align:bottom;
+    padding-left:0;
+}
+
+.transition-opacity {
+    transition:opacity ease-in-out .2s;
+    -webkit-transition:opacity ease-in-out .2s;
+    opacity:1;
+}
+
+.opacity-out {
+    opacity:.2;
+}
+
+#pac-input {
+    width:400px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+
+.umap-location-list-wrapper table {
+    width:100%;
+}
+
+.umap-location-list-wrapper thead {
+    border-bottom:1px solid #eee;
+}
+
+.umap-location-list-wrapper th {
+    cursor:pointer;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.umap-location-list-wrapper th span {
+    color:#bbb;
+}
+
+.umap-location-list-wrapper tbody td {
+   padding:5px 5px;
+}
+
+.umap-location-list-wrapper tbody tr:first-child td {
+    padding-top:10px;
+}
+
+.umap-location-list-wrapper tbody tr:hover td, .umap-location-list-wrapper tr.selected {
+    background:#f5f5f5;
+}
+
+.umap-location-list-wrapper tbody tr.disabled {
+    color:#ccc;
+    background:#eee
+}
+
+.umap-location-list-wrapper tbody tr.disabled .td-disable span:hover {
+    color:green;
+}
+
+.umap-location-list-wrapper tbody .td-delete,
+.umap-location-list-wrapper tbody .td-disable,
+.umap-location-list-wrapper .th-center
+ {
+    text-align:center;
+}
+
+.umap-location-list-wrapper td span {
+    display:block;
+    width:100%;
+}
+
+.umap-location-list-wrapper td span:hover {
+    text-decoration:underline;
+}
+
+.umap-location-list-wrapper .td-delete span:hover {
+    text-decoration:none;
+    color:red;
+    cursor:pointer;
+}
+
+.umap-location-list-wrapper .td-disable span:hover {
+    text-decoration:none;
+    color:orange;
+    cursor:pointer;
+}
+
+.umap-location-list-wrapper .caret {
+    vertical-align:middle;
+    padding-top:5px;
+}
+
+.caret-up {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    margin-top:-5px;
+    border-bottom: 4px solid #000;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    content: "";
+}
+
+.umap-controls-wrapper {
+    margin-top:15px;
+    text-align:right;
+}
+
+.umap-controls-wrapper a.disabled {
+    color:#ccc;
+}
+
+.umap-controls-wrapper .pager-wrapper {
+    display:inline;
+    margin-right:15px;
+}
+
+.umap-controls-wrapper .pager-wrapper .pager-counter {
+    margin:0 5px;
+}

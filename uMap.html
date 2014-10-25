@@ -1,0 +1,82 @@
+﻿<div ng-controller="uMap.GoogleMapsController" class="umb-editor umb-googlemaps">
+    <div class="transition-opacity" style="height: 500px;" id="{{model.alias}}_map"></div>
+    <div class="umap-input-wrapper">
+        <label for="new-location">Add location:</label>
+        <input type="text" name="new-location" id="pac-input" value="" />
+    </div>
+    <div ng-if="model.value.length != 0" class="umap-location-list-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th title="Sort by {{f}}" ng-repeat="f in fields" ng-click="sortLocations(f)">{{f | sentenceCase}}
+                        <span ng-class="{
+                              'caret-up' : orderByParam === f && reverseOrder === false,
+                              'caret' : orderByParam === f && reverseOrder === true
+                            }"></span>
+                    </th>
+                    <th title="Sort by address" ng-click="sortLocations('address')">Address 
+                        <span ng-class="{
+                              'caret-up' : orderByParam === 'address' && reverseOrder === false,
+                              'caret' : orderByParam === 'address' && reverseOrder === true
+                            }"></span>
+                    </th>
+                    <th class="th-center">Disabled</th>
+                    <th class="th-center">Delete?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="o in model.value | orderBy:orderByParam:reverseOrder | startFrom:currentPage*pageSize | limitTo:pageSize track by $index"
+                    ng-click="centreMap($index + currentPage*pageSize)"
+                    ng-class="{
+                        'selected' : $index + currentPage*pageSize === selectedMarkerId,
+                        'disabled' : o.disabled === true
+                    }"
+                    ng-mouseenter="changeOpacity($index + currentPage*pageSize, .5)"
+                    ng-mouseleave="changeOpacity($index + currentPage*pageSize, 1)">
+
+                    <td ng-repeat="f in fields">
+                        <span contenteditable="true" title="Click to edit" ng-model="o[f]">{{o[f]}}</span>
+                    </td>
+                    <td>
+                        <span contenteditable="true" title="Click to edit" ng-model="o.address">{{o.address}}</span>
+                    </td>
+                    <td class="td-disable">
+                        <span class="icon"
+                              title="Click to {{o.disabled === true ? 'enable' : 'disable'}}"
+                              ng-click="disableMarkerClick($index + currentPage*pageSize)"
+                              ng-class="{
+                                'icon-check' : o.disabled === true,
+                                'icon-delete' : o.disabled !== true
+                              }">
+                        </span>
+                    </td>
+                    <td class="td-delete">
+                        <span class="icon icon-delete" title="Click to delete" ng-click="removeMarkerClick($index + currentPage*pageSize)"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>    
+        <div class="umap-controls-wrapper">
+            
+            <div ng-if="model.value.length > pageSize" class="pager-wrapper">
+                <a class="btn" ng-class="{'disabled':currentPage === 0}" ng-click="paging(-1)">
+                    <span class="icon icon-navigation-left"></span>
+                </a>
+
+                <span class="pager-counter">Page {{currentPage+1}} of {{pageCount}}</span>
+
+                <a class="btn" ng-class="{'disabled':currentPage === pageCount-1}" ng-click="paging(1)">
+                    <span class="icon icon-navigation-right"></span>
+                </a>
+            </div>
+            
+            <select ng-model="pageSize" ng-change="pageCounter(pageSize)">
+                <option value="1">1 per page</option>
+                <option value="2">2 per page</option>
+                <option value="3">3 per page</option>
+                <option value="{{model.value.length}}">Show all</option>
+            </select>
+        </div>
+    </div>
+
+</div>
