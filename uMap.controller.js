@@ -63,7 +63,7 @@
             geocoder = new google.maps.Geocoder();
             $scope.fields = $scope.model.config.additionalFields.split(',');
             $scope.currentPage = 0;
-            $scope.pageSize = 1;
+            $scope.pageSize = 5;
             $scope.pageCounter($scope.pageSize);
             
             // set the default if no data stored for the node 
