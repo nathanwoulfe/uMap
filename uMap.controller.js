@@ -1,9 +1,8 @@
-﻿angular.module("umbraco").controller("GMaps.GoogleMapsController",
+﻿angular.module("umbraco").controller("uMap.GoogleMapsController",
     function ($rootScope, $scope, $filter, dialogService, assetsService) {
 
-        /*making these global to avoid passing around between functions */
         var marker, geocoder, map, mapDiv, fields,            
-            gMapMarkers = []; /* stores the actual marker objects */
+            gMapMarkers = [];
             
         assetsService.loadJs('//www.google.com/jsapi')
             .then(function () {
@@ -66,15 +65,21 @@
             $scope.pageSize = 5;
             $scope.pageCounter($scope.pageSize);
             
-            // set the default if no data stored for the node 
-            if (($scope.model.value === '' || $scope.model.value.length === 0) && $scope.model.config.defaultLocation != null) {
+            // model should be an array - we'll be pushing and sorting
+            if ($scope.model.value === '') {
                 $scope.model.value = [];
+            }
+
+            // set the default if one exists and no model data
+            if ($scope.model.value === '' && $scope.model.config.defaultLocation != null) {                
+
                 var o = {};
                 o['lat'] = $scope.model.config.defaultLocation.split(',')[0];
                 o['lng'] = $scope.model.config.defaultLocation.split(',')[1];
                 o['address'] = 'Default address';
                 o['disabled'] = true;
 
+                // add custom fields, if any
                 if ($scope.fields.length != 0) {
                     var i, len = $scope.fields.length;
                     for (i = 0; i < len; i++) {
@@ -85,9 +90,14 @@
                 $scope.model.value.push(o);
             }
 
-            var center = new google.maps.LatLng($scope.model.value[0].lat, $scope.model.value[0].lng),               
-                mapOptions = {
-                    zoom: 9,
+            // set initial center to 0,0 unless the model has a value
+            var center = new google.maps.LatLng(0, 0);
+            if ($scope.model.value != '') {
+                center = new google.maps.LatLng($scope.model.value[0].lat, $scope.model.value[0].lng)
+            }
+
+            var mapOptions = {
+                    zoom: 2,
                     center: center,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: false,
@@ -106,7 +116,9 @@
 
             $scope.orderByParam = 'address';
             $scope.reverseOrder = false;
-            $scope.sortLocations($scope.orderByParam);
+            if ($scope.model.value !== '') {
+                $scope.sortLocations($scope.orderByParam);
+            }
 
             // ADDLISTENER - map click
             // add new markers on click but not double click...
@@ -163,7 +175,7 @@
                         mapDiv.className = "transition-opacity";                        
                     } else {
                         notificationsService.error("ERROR", "Couldn't find valid location");
-                        $scope.model.value[i].address = "Um, I think we're lost";
+                        $scope.model.value[i].address = "Couldn't find valid location";
                     }
                     $scope.$apply();
                     $scope.sortLocations($scope.orderByParam);
@@ -179,31 +191,32 @@
                 draggable: true                
             });
 
-            var index = $scope.model.value.length;
+            // show the marker on the map
             marker.setMap(map);
+
+            // add the marker to the mapping array - doesn't have an address just yet
+            gMapMarkers.push(marker);
 
             // listen for events - clicks and drags, yeah! 
             addEventListeners();
 
-            // push into markers array and set as model value, store actual marker in gMapMakers 
-            $scope.model.value[index] = {
-                'lat': latLng.lat(),
-                'lng': latLng.lng(),
-                'address': 'Looking up location...',
-                'disabled': false
-            };
+            // push into model value
+            var o = {};
+            o['lat'] = latLng.lat();
+            o['lng'] = latLng.lng();
+            o['address'] = 'Looking up location...';
+            o['disabled'] = false;
+
+            $scope.model.value.push(o);
+            var index = $scope.model.value.length - 1;
 
             // add custom fields to scoped marker
             if ($scope.fields.length != 0) {
-
                 var i, len = $scope.fields.length;
                 for (i = 0; i < len; i++) {
                     $scope.model.value[index][$scope.fields[i]] = ' ';
                 }
             }
-            
-            // add the marker to the mapping array - doesn't have an address just yet
-            gMapMarkers.push(marker);            
 
             // look up new marker location
             codeLatLng(index, marker.getPosition());
@@ -251,8 +264,9 @@
 
         function removeMarker(i) {
 
+            // better confirm that delete request...
             var ds = dialogService.open({
-                template: '../App_Plugins/GMaps/GMaps_deleteDialog.html',
+                template: '../App_Plugins/uMap/uMap_deleteDialog.html',
                 scope: $scope,
                 show: true,
                 callback: done
@@ -377,7 +391,7 @@ angular.module('umbraco').filter('startFrom', function () {
 
 
 
-angular.module("umbraco").controller("GMaps.DeleteDialogController", function ($scope, dialogService) {
+angular.module("umbraco").controller("uMap.DeleteDialogController", function ($scope, dialogService) {
 
     $scope.deleteDialogClick = function (t) {
         $scope.submit(t);
